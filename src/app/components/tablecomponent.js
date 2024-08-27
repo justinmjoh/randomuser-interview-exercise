@@ -47,6 +47,21 @@ export default function TableComponent(data) {
           return 0;
         }
       });
+    } else if (sortMethod.field == "dob") {
+      tableData.sort((a,b) => {
+        // Construct temporary Date objects for comparison
+        const dateA = new Date(a.dob.date);
+        const dateB = new Date(b.dob.date);
+        
+        // Multiply return value by order to set ascending / descending
+        if (dateA < dateB) {
+          return -1 * sortMethod.order;
+        } else if (dateA > dateB) {
+          return 1 * sortMethod.order;
+        } else {
+          return 0;
+        }
+      });
     }
   }
 
@@ -76,7 +91,9 @@ export default function TableComponent(data) {
               <SortFieldButton sortMethod={sortMethod} sortAction={enableSort} field="last">Last Name</SortFieldButton>
             </th>
             <th>Country</th>
-            <th>Date of Birth</th>
+            <th>
+            <SortFieldButton sortMethod={sortMethod} sortAction={enableSort} field="dob">Date of Birth</SortFieldButton>
+            </th>
             <th>Birthday</th>
           </tr>
         </thead>
