@@ -11,99 +11,99 @@ import { formatDOB, checkBirthday } from "../dob";
  */
 export default function TableComponent(data) {
 
-  const tableData = data.data.results; // Pull results array from API data
-  const [sortMethod, setSortMethod] = useState(null); // {field, order (1 = asc, -1 = desc)}
+    const tableData = data.data.results; // Pull results array from API data
+    const [sortMethod, setSortMethod] = useState(null); // {field, order (1 = asc, -1 = desc)}
 
-  // Manages state and ordering logic for sortable columns
-  const enableSort = field => {
-    let order = 1;
-    if (sortMethod != null && sortMethod.field == field && sortMethod.order == 1) {
-      order = -1;
+    // Manages state and ordering logic for sortable columns
+    const enableSort = field => {
+        let order = 1;
+        if (sortMethod != null && sortMethod.field == field && sortMethod.order == 1) {
+            order = -1;
+        }
+        setSortMethod({field, order});
     }
-    setSortMethod({field, order});
-  }
 
-  // Drive sorting for specified fields based on sortMethod state (unsorted by default)
-  if (sortMethod != null) {
-    if (sortMethod.field == "first") {
-      tableData.sort((a,b) => {
-        // Multiply return value by order to set ascending / descending
-        if (a.name.first < b.name.first) {
-          return -1 * sortMethod.order;
-        } else if (a.name.first > b.name.first) {
-          return 1 * sortMethod.order;
-        } else {
-          return 0;
+    // Drive sorting for specified fields based on sortMethod state (unsorted by default)
+    if (sortMethod != null) {
+        if (sortMethod.field == "first") {
+            tableData.sort((a,b) => {
+                // Multiply return value by order to set ascending / descending
+                if (a.name.first < b.name.first) {
+                    return -1 * sortMethod.order;
+                } else if (a.name.first > b.name.first) {
+                    return 1 * sortMethod.order;
+                } else {
+                    return 0;
+                }
+            });
+        } else if (sortMethod.field == "last") {
+            tableData.sort((a,b) => {
+                // Multiply return value by order to set ascending / descending
+                if (a.name.last < b.name.last) {
+                    return -1 * sortMethod.order;
+                } else if (a.name.last > b.name.last) {
+                    return 1 * sortMethod.order;
+                } else {
+                    return 0;
+                }
+            });
+        } else if (sortMethod.field == "dob") {
+            tableData.sort((a,b) => {
+                // Construct temporary Date objects for comparison
+                const dateA = new Date(a.dob.date);
+                const dateB = new Date(b.dob.date);
+
+                // Multiply return value by order to set ascending / descending
+                if (dateA < dateB) {
+                    return -1 * sortMethod.order;
+                } else if (dateA > dateB) {
+                    return 1 * sortMethod.order;
+                } else {
+                    return 0;
+                }
+            });
         }
-      });
-    } else if (sortMethod.field == "last") {
-      tableData.sort((a,b) => {
-        // Multiply return value by order to set ascending / descending
-        if (a.name.last < b.name.last) {
-          return -1 * sortMethod.order;
-        } else if (a.name.last > b.name.last) {
-          return 1 * sortMethod.order;
-        } else {
-          return 0;
-        }
-      });
-    } else if (sortMethod.field == "dob") {
-      tableData.sort((a,b) => {
-        // Construct temporary Date objects for comparison
-        const dateA = new Date(a.dob.date);
-        const dateB = new Date(b.dob.date);
-        
-        // Multiply return value by order to set ascending / descending
-        if (dateA < dateB) {
-          return -1 * sortMethod.order;
-        } else if (dateA > dateB) {
-          return 1 * sortMethod.order;
-        } else {
-          return 0;
-        }
-      });
     }
-  }
 
-  const today = new Date(); // Instantiate today's date once to reduce total memory use on iteration
-  const tableRows = tableData.map((row, i) => {
-    let dob = new Date(row.dob.date); // Build Date for DOB to aid in formatting and parsing
+    const today = new Date(); // Instantiate today's date once to reduce total memory use on iteration
+    const tableRows = tableData.map((row, i) => {
+        const dob = new Date(row.dob.date); // Build Date for DOB to aid in formatting and parsing
+            return (
+                <tr key={i} className="odd:bg-gray-800">
+                    <td>{row.name.first}</td>
+                    <td>{row.name.last}</td>
+                    <td>{row.location.country}</td>
+                    <td>{formatDOB(dob)}</td>
+                    <td>{checkBirthday(dob, today)}</td>
+            </tr>
+        );
+    });
+
     return (
-      <tr key={i} className="odd:bg-gray-800">
-        <td>{row.name.first}</td>
-        <td>{row.name.last}</td>
-        <td>{row.location.country}</td>
-        <td>{formatDOB(dob)}</td>
-        <td>{checkBirthday(dob, today)}</td>
-      </tr>
-    );
-  });
-
-  return (
-    <div className="w-3/4 border rounded border-2 border-blue-600">
-      <table className="w-full bg-gray-600 text-center">
-        <thead className="border-b border-white">
-          <tr className="">
-            <th>
-              <SortFieldButton sortMethod={sortMethod} sortAction={enableSort} field="first">First Name</SortFieldButton>
-            </th>
-            <th>
-              <SortFieldButton sortMethod={sortMethod} sortAction={enableSort} field="last">Last Name</SortFieldButton>
-            </th>
-            <th>Country</th>
-            <th>
-            <SortFieldButton sortMethod={sortMethod} sortAction={enableSort} field="dob">Date of Birth</SortFieldButton>
-            </th>
-            <th>Birthday</th>
-          </tr>
-        </thead>
-        <tbody>
-          {/* Genereate the rows from API data */}
-          {tableRows}
-        </tbody>
-      </table>
-    </div>
-  )
+        <div className="w-3/4 border rounded border-2 border-blue-600">
+            <table className="w-full bg-gray-600 text-center">
+                <thead className="border-b border-white">
+                    <tr className="">
+                        <th>
+                            <SortFieldButton sortMethod={sortMethod} sortAction={enableSort} field="first">First Name</SortFieldButton>
+                        </th>
+                        <th>
+                            <SortFieldButton sortMethod={sortMethod} sortAction={enableSort} field="last">Last Name</SortFieldButton>
+                        </th>
+                        <th>Country</th>
+                        <th>
+                            <SortFieldButton sortMethod={sortMethod} sortAction={enableSort} field="dob">Date of Birth</SortFieldButton>
+                        </th>
+                        <th>Birthday</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {/* Genereate the rows from API data */}
+                    {tableRows}
+                </tbody>
+            </table>
+        </div>
+    )
 }
 
 /**
@@ -117,20 +117,20 @@ export default function TableComponent(data) {
  * @returns JSX
  */
 function SortFieldButton({sortMethod, sortAction, field, children}) {
-  let style = "underline";
-  let arrow = "\u2195"; // Initial bidirectional arrow
-  if (sortMethod != null && sortMethod.field == field) {
-    style = "underline text-blue-600" // Darken to imply current sorting field
-    if (sortMethod.order == 1) {
-      arrow = "\u2193"; // Set arrow to point down (ascending)
-    } else if (sortMethod.order == -1) {
-      arrow = "\u2191"; // Set arrow to point up (descendig)
+    let style = "underline";
+    let arrow = "\u2195"; // Initial bidirectional arrow
+    if (sortMethod != null && sortMethod.field == field) {
+        style = "underline text-blue-600" // Darken to imply current sorting field
+        if (sortMethod.order == 1) {
+            arrow = "\u2193"; // Set arrow to point down (ascending)
+        } else if (sortMethod.order == -1) {
+            arrow = "\u2191"; // Set arrow to point up (descendig)
+        }
     }
-  }
 
-  return (
-    <button className={style} type="button" onClick={() => sortAction(field)}>
-      {children}{arrow}
-    </button>
-  );
+    return (
+        <button className={style} type="button" onClick={() => sortAction(field)}>
+            {children}{arrow}
+        </button>
+    );
 }
