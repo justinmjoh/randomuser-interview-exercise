@@ -12,7 +12,7 @@ the in-built directives to do so allow for simplified containerization.
 
 To build this project without Dev Containers, clone this repository and:
 ```bash
-    npm install
+npm install
 ```
 
 ## Unit Testing

@@ -12,7 +12,7 @@ import { SortFieldButton } from "./sortfieldbutton";
  * @returns JSX
  */
 export function TableComponent(data) {
-
+    console.log(data);
     const tableData = data.data.results; // Pull results array from API data
     const [sortMethod, setSortMethod] = useState(null); // {field, order (1 = asc, -1 = desc)}
 
