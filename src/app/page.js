@@ -18,11 +18,17 @@ export default function Home() {
     const [loading, setLoading] = useState(true); // Loading state for spinner, enable by default
 
     useEffect(() => {
-        fetch('https://randomuser.me/api/?inc=name,location,dob&nat=us,ca&results=100')
-            .then(response => response.json())
-            .then(json => setData(json))
-            .catch(error => console.log(error))
-            .finally(() => setLoading(false)); // Disable spinner
+        const fetchData = async () => {
+            try {
+                const response = await fetch('https://randomuser.me/api/?inc=name,location,dob&nat=us,ca&results=100');
+                const json = await response.json();
+                setData(json);
+                setLoading(false);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        fetchData();
     }, []);
 
     return (
