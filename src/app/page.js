@@ -32,7 +32,7 @@ export default function Home() {
     }, []);
 
     return (
-        <main className="flex flex-col items-center bg-gray-800 min-h-screen">
+        <main className="flex flex-col items-center bg-gray-800 min-h-screen pb-2">
             <h1 className="text-2xl font-bold py-4">RandomUser Project</h1>
             {loading ? <LoadingComponent></LoadingComponent> : <TableComponent data={data}></TableComponent>}
         </main>
