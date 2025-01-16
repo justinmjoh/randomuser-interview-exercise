@@ -1,4 +1,4 @@
-# Brown University Coding Exercise
+# RandomUser Coding Exercise
 
 ## Running Without Dev Containers
 
